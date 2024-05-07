@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@aries-framework/askar": "^0.4.0",
+    "@aries-framework/core": "^0.4.0",
+    "@aries-framework/node": "^0.4.0",
+    "@hyperledger/aries-askar-nodejs": "^0.1.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
