@@ -13,6 +13,11 @@ import {
 import { agentDependencies, HttpInboundTransport } from '@aries-framework/node'
 import { ariesAskar } from '@hyperledger/aries-askar-nodejs'
 
+import { anoncreds } from '@hyperledger/anoncreds-nodejs'
+import { AnonCredsModule } from '@aries-framework/anoncreds'
+import { AnonCredsRsModule } from '@aries-framework/anoncreds-rs'
+import { IndyVdrAnonCredsRegistry } from '@aries-framework/indy-vdr'
+
 
 //** Initialization of bob agent
 
@@ -34,6 +39,15 @@ const initializeBobAgent = async () => {
     config,
     modules: {
       askar: new AskarModule({ ariesAskar }),
+      //* newly added
+      anoncredsRs: new AnonCredsRsModule({
+        anoncreds,
+      }),
+      anoncreds: new AnonCredsModule({
+        // Here we add an Indy VDR registry as an example, any AnonCreds registry
+        // can be used
+        registries: [new IndyVdrAnonCredsRegistry()],
+      }),
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
     },
     dependencies: agentDependencies,
@@ -48,7 +62,7 @@ const initializeBobAgent = async () => {
   // Register a simple `Http` inbound transport
   // agent.registerInboundTransport(new HttpInboundTransport({ port: 3002 }))
 
-  
+
 
   // Initialize the agent
   await agent.initialize()
@@ -74,12 +88,20 @@ const initializeAcmeAgent = async () => {
     config,
     modules: {
       askar: new AskarModule({ ariesAskar }),
+      anoncredsRs: new AnonCredsRsModule({
+        anoncreds,
+      }),
+      anoncreds: new AnonCredsModule({
+        // Here we add an Indy VDR registry as an example, any AnonCreds registry
+        // can be used
+        registries: [new IndyVdrAnonCredsRegistry()],
+      }),
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
     },
     dependencies: agentDependencies,
   })
 
-  // console.log(typeof(Agent))
+  console.log(agent)
 
   // Register a simple `WebSocket` outbound transport
   agent.registerOutboundTransport(new WsOutboundTransport())
