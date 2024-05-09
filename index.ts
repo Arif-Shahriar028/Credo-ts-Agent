@@ -122,7 +122,7 @@ const createNewInvitation = async (agent: Agent) => {
   const outOfBandRecord = await agent.oob.createInvitation()
 
   return {
-    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'https://example.org' }),
+    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3001' }),
     outOfBandRecord,
   }
 }
