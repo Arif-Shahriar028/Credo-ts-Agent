@@ -8,7 +8,8 @@
     "@aries-framework/node": "^0.4.0",
     "@hyperledger/anoncreds-nodejs": "^0.1.0",
     "@hyperledger/aries-askar-nodejs": "^0.1.0",
-    "@hyperledger/indy-vdr-nodejs": "^0.1.0"
+    "@hyperledger/indy-vdr-nodejs": "^0.1.0",
+    "@types/node": "^20.12.11"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
