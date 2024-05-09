@@ -144,7 +144,9 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
     if (payload.connectionRecord.outOfBandId !== outOfBandRecord.id) return
     if (payload.connectionRecord.state === DidExchangeState.Completed) {
       // the connection is now ready for usage in other protocols!
-      console.log(payload.connectionRecord)
+      console.log("=========================>>>>>>>>><<<<<<<<<<<<==============")
+      console.log(payload.connectionRecord.outOfBandId)
+      console.log(outOfBandRecord.id)
       console.log(`Connection for out-of-band id ${outOfBandRecord.id} completed`)
 
       // Custom business logic can be included here
