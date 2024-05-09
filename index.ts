@@ -136,6 +136,9 @@ const createLegacyInvitation = async (agent: Agent) => {
 const receiveInvitation = async (agent: Agent, invitationUrl: string) => {
   const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(invitationUrl)
 
+  console.log("Receiving invitation and outOfBandRecord is:")
+  console.log(outOfBandRecord)
+
   return outOfBandRecord
 }
 
@@ -147,6 +150,10 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
       console.log("=========================>>>>>>>>><<<<<<<<<<<<==============")
       console.log(payload.connectionRecord.outOfBandId)
       console.log(outOfBandRecord.id)
+
+      console.log("*******************oooooooooooooooo****************")
+	    console.log(payload.connectionRecord.state)
+
       console.log(`Connection for out-of-band id ${outOfBandRecord.id} completed`)
 
       // Custom business logic can be included here
@@ -174,13 +181,13 @@ const run = async () => {
 
   console.log(outOfBandRecord)
 
-  console.log('Accepting the invitation as Bob...')
-  await receiveInvitation(bobAgent, invitationUrl)
-
   console.log('Listening for connection changes...')
   setupConnectionListener(acmeAgent, outOfBandRecord, () =>
     console.log('We now have an active connection to use in the following tutorials')
   )
+
+  console.log('Accepting the invitation as Bob...')
+  await receiveInvitation(bobAgent, invitationUrl)
 
 }
 
