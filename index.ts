@@ -101,7 +101,7 @@ const initializeAcmeAgent = async () => {
     dependencies: agentDependencies,
   })
 
-  console.log(agent)
+  // console.log(agent)
 
   // Register a simple `WebSocket` outbound transport
   agent.registerOutboundTransport(new WsOutboundTransport())
@@ -144,6 +144,7 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
     if (payload.connectionRecord.outOfBandId !== outOfBandRecord.id) return
     if (payload.connectionRecord.state === DidExchangeState.Completed) {
       // the connection is now ready for usage in other protocols!
+      console.log(payload.connectionRecord)
       console.log(`Connection for out-of-band id ${outOfBandRecord.id} completed`)
 
       // Custom business logic can be included here
@@ -169,13 +170,16 @@ const run = async () => {
   console.log('Creating the invitation as Acme...')
   const { outOfBandRecord, invitationUrl } = await createNewInvitation(acmeAgent)
 
+  console.log(outOfBandRecord)
+
+  console.log('Accepting the invitation as Bob...')
+  await receiveInvitation(bobAgent, invitationUrl)
+
   console.log('Listening for connection changes...')
   setupConnectionListener(acmeAgent, outOfBandRecord, () =>
     console.log('We now have an active connection to use in the following tutorials')
   )
 
-  console.log('Accepting the invitation as Bob...')
-  await receiveInvitation(bobAgent, invitationUrl)
 }
 
 export default run
