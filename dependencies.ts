@@ -19,6 +19,7 @@ import { AnonCredsModule } from '@aries-framework/anoncreds';
 import { AnonCredsRsModule } from '@aries-framework/anoncreds-rs';
 import { IndyVdrAnonCredsRegistry } from '@aries-framework/indy-vdr';
 
+
 export {
   AskarModule,
   Agent,

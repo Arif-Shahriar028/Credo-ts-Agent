@@ -1,3 +1,4 @@
+import { DidsModule } from '@aries-framework/core';
 import {
   AskarModule,
   Agent,
@@ -18,6 +19,16 @@ import {
   IndyVdrAnonCredsRegistry,
 } from '../dependencies';
 
+
+// import {
+//   CheqdAnonCredsRegistry,
+//   CheqdDidRegistrar,
+//   CheqdDidResolver,
+//   CheqdModule,
+//   CheqdModuleConfig,
+//   CheqdDidCreateOptions,
+// } from '@aries-framework/cheqd'
+
 // Now you can use these imported modules in this file without re-importing them.
 
 const initializeAcmeAgent = async () => {
@@ -37,6 +48,23 @@ const initializeAcmeAgent = async () => {
   const agent = new Agent({
     config,
     modules: {
+      // dids: new DidsModule({
+      //   registrars: [new CheqdDidRegistrar()],
+      //   resolvers: [new CheqdDidResolver()],
+      // }),
+  
+      // Add cheqd module
+      // cheqd: new CheqdModule(
+      //   new CheqdModuleConfig({
+      //     networks: [
+      //       {
+      //         network: 'testnet',
+      //         cosmosPayerSeed: '12345678912345678912345678912345',
+      //       },
+      //     ],
+      //   })
+      // ),
+  
       askar: new AskarModule({ ariesAskar }),
       anoncredsRs: new AnonCredsRsModule({
         anoncreds,
@@ -44,7 +72,8 @@ const initializeAcmeAgent = async () => {
       anoncreds: new AnonCredsModule({
         // Here we add an Indy VDR registry as an example, any AnonCreds registry
         // can be used
-        registries: [new IndyVdrAnonCredsRegistry()],
+        // registries: [new CheqdAnonCredsRegistry()],
+        registries : [new IndyVdrAnonCredsRegistry()],
       }),
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
     },
@@ -72,8 +101,10 @@ const initializeAcmeAgent = async () => {
 const createNewInvitation = async (agent: Agent) => {
   const outOfBandRecord = await agent.oob.createInvitation()
 
+  // console.log(outOfBandRecord.outOfBandInvitation)
+
   return {
-    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'https://facebook.com' }),
+    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3001' }),
     outOfBandRecord,
   }
 }
@@ -88,11 +119,11 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
     if (payload.connectionRecord.outOfBandId !== outOfBandRecord.id) return
     if (payload.connectionRecord.state === DidExchangeState.Completed) {
       // the connection is now ready for usage in other protocols!
-      console.log("=======================================")
+      console.log("================= Checking outOfBandId ======================")
       console.log("payload.connectionRecord.outOfBandId : "+payload.connectionRecord.outOfBandId)
       console.log("outOfBandRecord.id : " + outOfBandRecord.id)
 
-      console.log("=======================================")
+      console.log("=================== Connection Successful ====================")
       console.log(`Connection for out-of-band id ${outOfBandRecord.id} completed`)
 
       // Custom business logic can be included here
@@ -111,6 +142,10 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
 const run = async () => {
   console.log('Initializing Acme agent...')
   const acmeAgent = await initializeAcmeAgent()
+
+  console.log("======================== Acme Agent =======================")
+  // console.log(acmeAgent.events)
+  // console.log(acmeAgent.oob)
 
   console.log('Creating the invitation')
   const { outOfBandRecord, invitationUrl } = await createNewInvitation(acmeAgent)

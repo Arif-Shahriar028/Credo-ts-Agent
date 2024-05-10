@@ -72,15 +72,46 @@ const initializeBobAgent = async () => {
 
 
 const receiveInvitation = async (agent: Agent, invitationUrl: string) => {
-  const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(invitationUrl)
+  const { outOfBandRecord, connectionRecord } = await agent.oob.receiveInvitationFromUrl(invitationUrl)
 
   // console.log("Receiving invitation and outOfBandRecord is:")
   // console.log(outOfBandRecord)
 
-  console.log("=========================================")
-  console.log(outOfBandRecord);
+  // console.log("================= OutOfBandRecord ========================")
+  // console.log(outOfBandRecord.outOfBandInvitation);
+
+  // console.log("==================== Connection record =====================")
+  // console.log(connectionRecord)
 
   return outOfBandRecord
+}
+
+
+const setupConnectionListener = (agent: Agent, cb: (...args: any) => void) => {
+  agent.events.on<ConnectionStateChangedEvent>(ConnectionEventTypes.ConnectionStateChanged, ({ payload }) => {
+
+    console.log("================== Connection Record state =====================")
+	  console.log("payload.connectionRecord.state : "+payload.connectionRecord.state)
+
+    // if (payload.connectionRecord.outOfBandId !== outOfBandRecord.id) return
+    if (payload.connectionRecord.state === DidExchangeState.Completed) {
+      // the connection is now ready for usage in other protocols!
+      // console.log("=======================================")
+      // console.log("payload.connectionRecord.outOfBandId : "+payload.connectionRecord.outOfBandId)
+      // console.log("outOfBandRecord.id : " + outOfBandRecord.id)
+
+      // console.log("=======================================")
+      // console.log(`Connection for out-of-band id ${outOfBandRecord.id} completed`)
+
+      // Custom business logic can be included here
+      // In this example we can send a basic message to the connection, but
+      // anything is possible
+      cb()
+
+      // We exit the flow
+      // process.exit(0)
+    }
+  })
 }
 
 
@@ -89,6 +120,8 @@ const run = async () => {
   console.log('Initializing Bob agent...')
   const bobAgent = await initializeBobAgent()
 
+  console.log("======================== Bob Agent =======================")
+
   // take input invitationUrl as a string
   const rl = readline.createInterface({
     input: process.stdin,
@@ -96,6 +129,10 @@ const run = async () => {
   });
 
   rl.question('Please paste the invitation URL: ', async (url: string) => {
+    console.log("Setting up connection listener")
+    setupConnectionListener(bobAgent, () =>
+      console.log('We now have an active connection with Acme')
+    )
     console.log('Accepting the invitation as Bob...');
     await receiveInvitation(bobAgent, url);
     rl.close();
