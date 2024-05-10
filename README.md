@@ -29,3 +29,32 @@ npx ts-node acme.ts
 ```
 npx ts-node bob.ts
 ```
+
+### Make terminal output faster
+
+Add the following object into the package.json:
+
+```
+"resolutions": {
+  "ref-napi": "npm:@2060.io/ref-napi",
+  "@types/node": "^16.11.7"
+}
+```
+
+Then: `yarn refresh`
+
+### @TODO
+
+- [x] connection establishment
+- [ ] issuer public did create
+- [ ] issuer schema creation
+- [ ] issuer credential definition creation
+- [ ] issuer credential offer
+- [ ] holder credential request accept
+- [ ] verifier proof request send
+- [ ] holder proof response send
+- [ ] verifier proof verification
+
+#### Indy public ledger
+
+`http://test.bcovrin.vonx.io/`
