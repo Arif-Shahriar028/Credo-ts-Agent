@@ -35,7 +35,7 @@ const initializeIssuerAgent = async () => {
       id: 'mainIssuer',
       key: 'demoagentissuer0000000000000000000',
     },
-    endpoints: ['http://localhost:3001'],
+    endpoints: ['https://819c-103-96-36-37.ngrok-free.app'],
   }
 
   // A new instance of an agent is created here

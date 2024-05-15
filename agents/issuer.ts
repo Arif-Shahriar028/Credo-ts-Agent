@@ -7,6 +7,7 @@ import createNewInvitation from '../src/issuer/create-invitation'
 import setUpCredentialListener from '../src/issuer/credential-listener'
 import publishSchema from '../src/issuer/schema-definition';
 import publishCredentialDefinition from '../src/issuer/credential-definition';
+import { anoncreds } from '@hyperledger/anoncreds-nodejs';
 
 
 const seed = TypedArrayEncoder.fromString(`12345678912345678912345678912347`)
@@ -103,7 +104,7 @@ const run = async () => {
       protocolVersion: 'v2',
       connectionId: connectionId,
       credentialFormats: {
-        indy: {
+        anoncreds: {
           // credentialDefinitionId: credentialDefinitionResult.credentialDefinitionState.credentialDefinitionId!,
           credentialDefinitionId : "did:indy:bcovrin:test:LvR6LGmiGzfowBgWtUA5oi/anoncreds/v0/CLAIM_DEF/697659/V1.4", //! This id is already existed in the sovrin ledger
           attributes: [
