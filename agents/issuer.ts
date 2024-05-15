@@ -1,4 +1,4 @@
-import { DidsModule, KeyType, TypedArrayEncoder } from '@aries-framework/core';
+import { CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, TypedArrayEncoder, V2CredentialProtocol } from '@aries-framework/core';
 import {
   AskarModule,
   Agent,
@@ -24,6 +24,7 @@ import {
 } from '../dependencies';
 import { stringify } from 'querystring';
 import { METHODS } from 'http';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService } from '@aries-framework/anoncreds';
 
 
 const seed = TypedArrayEncoder.fromString(`12345678912345678912345678912347`) // What you input on bcovrin. Should be kept secure in production!
@@ -71,6 +72,13 @@ const initializeAcmeAgent = async () => {
       dids: new DidsModule({
         registrars: [new IndyVdrIndyDidRegistrar()],
         resolvers: [new IndyVdrIndyDidResolver()],
+      }),
+      credentials: new CredentialsModule({
+        credentialProtocols: [
+          new V2CredentialProtocol({
+            credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
+          }),
+        ],
       }),
 
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
@@ -127,10 +135,14 @@ const setupConnectionListener = (agent: Agent, outOfBandRecord: OutOfBandRecord,
       // Custom business logic can be included here
       // In this example we can send a basic message to the connection, but
       // anything is possible
-      cb()
+      // cb()
+      console.log("Connection established with holder")
+      console.log(payload.connectionRecord.did)
+
+      cb(payload.connectionRecord.id)
 
       // We exit the flow
-      process.exit(0)
+      // process.exit(0)
     }
   })
 }
@@ -157,11 +169,53 @@ async function fetchGenesisString(): Promise<string> {
 }
 
 
+//* Credential issuance to holder
+// const indyCredentialExchangeRecord = async(agent: Agent)=>{
+//     await agent.credentials.offerCredential({
+//     protocolVersion: 'v2',
+//     connectionId: '<connection id>',
+//     credentialFormats: {
+//       indy: {
+//         credentialDefinitionId: '<credential definition id>',
+//         attributes: [
+//           { name: 'name', value: 'Jane Doe' },
+//           { name: 'age', value: '23' },
+//         ],
+//       },
+//     },
+//   })
+// }
+
+
+//* Credential issaunce listener
+
+const setUpCredentialListener = (agent: Agent, cb: (...args: any) => void) =>{
+  agent.events.on<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged, async ({ payload }) => {
+
+    console.log("Credential state: " + payload.credentialRecord.state)
+    
+    switch (payload.credentialRecord.state) {
+      case CredentialState.OfferReceived:
+        console.log('received a credential')
+        // custom logic here
+        await agent.credentials.acceptOffer({ credentialRecordId: payload.credentialRecord.id })
+      case CredentialState.Done:
+        console.log(`Credential for credential id ${payload.credentialRecord.id} is accepted`)
+        // For demo purposes we exit the program here.
+        // process.exit(0)
+    }
+  })
+}
+
+
+
 const run = async () => {
   console.log('Initializing Acme agent...')
   const acmeAgent = await initializeAcmeAgent()
 
   console.log("======================== Acme Agent =======================")
+
+  console.log(acmeAgent.connections.findAllByOutOfBandId("5e023330-34e1-403c-a943-b97b10aca12c"))
 
   console.log("========= Importing DIDs into wallet ===========")
 
@@ -182,10 +236,10 @@ const run = async () => {
 
   // const schemaResult = await acmeAgent.modules.anoncreds.registerSchema({
   //   schema: {
-  //     attrNames: ['name'],
+  //     attrNames: ['name', 'age'],
   //     issuerId: indyDid,
   //     name: 'Certificate schema',
-  //     version: '1.0.1',
+  //     version: '1.0.2',
   //   },
   //   options: {},
   // })
@@ -201,10 +255,10 @@ const run = async () => {
   //* Publishing credential definition on top of scema definition to ledger
   // const credentialDefinitionResult = await acmeAgent.modules.anoncreds.registerCredentialDefinition({
   //   credentialDefinition: {
-  //     tag: 'default',
+  //     tag: 'V1.3',
   //     issuerId: indyDid,
-  //     // schemaId: schemaResult.schemaState.schemaId!, // https://stackoverflow.com/questions/54496398/typescript-type-string-undefined-is-not-assignable-to-type-string
-  //     schemaId : "did:indy:bcovrin:test:LvR6LGmiGzfowBgWtUA5oi/anoncreds/v0/SCHEMA/Certificate schema/1.0.0",
+  //     schemaId: schemaResult.schemaState.schemaId!, // https://stackoverflow.com/questions/54496398/typescript-type-string-undefined-is-not-assignable-to-type-string
+  //     // schemaId : "did:indy:bcovrin:test:LvR6LGmiGzfowBgWtUA5oi/anoncreds/v0/SCHEMA/Certificate schema/1.0.0",
   //   },
   //   options: {},
   // })
@@ -228,9 +282,32 @@ const run = async () => {
   console.log("=============================================")
 
   console.log('Listening for connection changes...')
-  setupConnectionListener(acmeAgent, outOfBandRecord, () =>
-    console.log('We now have an active connection with Bob')
+  setupConnectionListener(acmeAgent, outOfBandRecord, async(connectionId) => {
+    console.log('We now have an active connection with Bob, connection Id :' + connectionId)
+    console.log("Issuing credential to the holder")
+    setUpCredentialListener(acmeAgent, ()=>{
+      console.log("credential issuence done")
+    })
+    const offerCred = await acmeAgent.credentials.offerCredential({
+      protocolVersion: 'v2',
+      connectionId: connectionId,
+      credentialFormats: {
+        indy: {
+          // credentialDefinitionId: credentialDefinitionResult.credentialDefinitionState.credentialDefinitionId!,
+          credentialDefinitionId : "did:indy:bcovrin:test:LvR6LGmiGzfowBgWtUA5oi/anoncreds/v0/CLAIM_DEF/689744/V1.3",
+          attributes: [
+            { name: 'name', value: 'kazi Arif Shahriar' },
+            { name: 'age', value: '24' },
+          ],
+        },
+      },
+      autoAcceptCredential: true,
+    })
+    console.log(offerCred.credentials)
+  } 
   )
+
+  
 }
 
 

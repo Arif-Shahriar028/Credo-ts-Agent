@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "refresh": "rm -rf node_modules yarn.lock && yarn",
+    "issuer": "npx ts-node agents/issuer.ts",
+    "holder": "npx ts-node agents/holder.ts"
+  },
   "dependencies": {
     "@aries-framework/anoncreds": "^0.4.0",
     "@aries-framework/anoncreds-rs": "^0.4.0",
@@ -15,5 +20,9 @@
   "devDependencies": {
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
+  },
+  "resolutions": {
+    "ref-napi": "npm:@2060.io/ref-napi",
+    "@types/node": "^16.11.7"
   }
 }
