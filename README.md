@@ -16,18 +16,16 @@ yarn install
 
 ## Run agents
 
-Change the directory to `agents` folder and open two individual terminal.
-
-1. In First terminal, run `Acme` agent:
+1. In First terminal, run `Issuer` agent:
 
 ```
-npx ts-node acme.ts
+yarn issuer
 ```
 
-2. In Second terminal, run `Bob` agent:
+2. In Second terminal, run `Holder` agent:
 
 ```
-npx ts-node bob.ts
+yarn holder
 ```
 
 ### Make terminal output faster
@@ -46,10 +44,10 @@ Then: `yarn refresh`
 ### @TODO
 
 - [x] connection establishment
-- [ ] issuer public did create
-- [ ] issuer schema creation
-- [ ] issuer credential definition creation
-- [ ] issuer credential offer
+- [x] issuer public did create
+- [x] issuer schema creation
+- [x] issuer credential definition creation
+- [x] issuer credential offer
 - [ ] holder credential request accept
 - [ ] verifier proof request send
 - [ ] holder proof response send
