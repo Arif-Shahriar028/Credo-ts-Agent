@@ -17,7 +17,14 @@ import { ariesAskar } from '@hyperledger/aries-askar-nodejs';
 import { anoncreds } from '@hyperledger/anoncreds-nodejs';
 import { AnonCredsModule } from '@aries-framework/anoncreds';
 import { AnonCredsRsModule } from '@aries-framework/anoncreds-rs';
-import { IndyVdrAnonCredsRegistry } from '@aries-framework/indy-vdr';
+import {
+  IndyVdrAnonCredsRegistry,
+  IndyVdrIndyDidRegistrar,
+  IndyVdrIndyDidResolver,
+  IndyVdrModule,
+} from '@aries-framework/indy-vdr'
+
+import { indyVdr } from '@hyperledger/indy-vdr-nodejs'
 
 
 export {
@@ -38,4 +45,8 @@ export {
   AnonCredsModule,
   AnonCredsRsModule,
   IndyVdrAnonCredsRegistry,
+  IndyVdrIndyDidRegistrar,
+  IndyVdrIndyDidResolver,
+  IndyVdrModule,
+  indyVdr
 };
