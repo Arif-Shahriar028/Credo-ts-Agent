@@ -48,10 +48,28 @@ Then: `yarn refresh`
 - [x] issuer schema creation
 - [x] issuer credential definition creation
 - [x] issuer credential offer
-- [ ] holder credential request accept
+- [x] holder credential request accept
 - [ ] verifier proof request send
 - [ ] holder proof response send
 - [ ] verifier proof verification
+
+### During credential exchange
+
+**Issuer States**
+
+- proposal-received (Optional)
+- offer-sent (1)
+- request-received (4)
+- credential-issued (5)
+- done (8)
+
+**Holder States**
+
+- proposal-sent (Optional)
+- offer-received (2)
+- request-sent (3)
+- credential-received (6)
+- done (7)
 
 #### Indy public ledger
 
