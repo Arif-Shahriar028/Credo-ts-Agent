@@ -1,6 +1,6 @@
 import { Agent } from "@aries-framework/core"
 
-const publishCredentialDefinition = async(agent: Agent, indyDid: string, schemaResult?: any) =>{
+const registerCredentialDefinition = async(agent: Agent, indyDid: string, schemaResult?: any) =>{
   const credentialDefinitionResult = await agent.modules.anoncreds.registerCredentialDefinition({
     credentialDefinition: {
       tag: 'V1.4',
@@ -10,7 +10,17 @@ const publishCredentialDefinition = async(agent: Agent, indyDid: string, schemaR
     },
     options: {},
   })
+
+  if (credentialDefinitionResult.credentialDefinitionState.state === 'failed') {
+    throw new Error(
+      `Error creating credential definition: ${credentialDefinitionResult.credentialDefinitionState.reason}`
+    )
+  }else{
+    console.log("=============== Credential definition ===============")
+    console.log(credentialDefinitionResult)
+  }
+  
   return credentialDefinitionResult
 }
 
-export default publishCredentialDefinition
+export default registerCredentialDefinition
