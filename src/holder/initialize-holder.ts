@@ -30,7 +30,7 @@ const initializeHolderAgent = async () => {
       id: 'mainHolder',
       key: 'demoagentholder00000000000000000000',
     },
-    endpoints: ['https://aacb-103-96-36-37.ngrok-free.app'],
+    endpoints: ['http://localhost:3002'],
   }
 
   // A new instance of an agent is created here

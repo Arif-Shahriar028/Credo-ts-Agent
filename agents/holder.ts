@@ -17,6 +17,10 @@ const run = async () => {
 
   //* Take input invitationUrl as a string
 
+  await inputInvitation(bobAgent)
+}
+
+const inputInvitation = async (agent: Agent)=>{
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -26,9 +30,8 @@ const run = async () => {
   rl.question('Please paste the invitation URL: ', async (url: string) => {
     console.log("Setting up connection listener")
 
-
     //* Connection Listener
-    setupConnectionListener(bobAgent, (agent: Agent) =>{
+    setupConnectionListener(agent, async (agent: Agent) =>{
       console.log('We now have an active connection with Acme')
 
       //* Credential Listener
@@ -36,16 +39,45 @@ const run = async () => {
        * & Inside the callback function
        * & Setup credential listener after connection is established
        */
-      setUpCredentialListener(agent)
+      setUpCredentialListener(agent, async (agent)=>{
+        rl.close()
+        await agentOptions(agent)
+      })
+      rl.close()
+      await agentOptions(agent)
     })
 
-    
     console.log('Accepting the invitation as Bob...');
-    await receiveInvitation(bobAgent, url);
+    await receiveInvitation(agent, url);
     
-    // rl.close();
+    rl.close();
+  });
+}
+
+const agentOptions = async (agent: Agent) =>{
+  
+  console.log("\n\n==============>> Select option <<================\n")
+  console.log("1. Input New Invitation")
+  console.log("2. Create Proof Request\n")
+  
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
   });
 
+  rl.question('What is your choosen option (number) : ', async (option: string) => {
+    if(option == '1'){
+      rl.close()
+      await inputInvitation(agent)
+    }
+
+    else if(option == '2'){
+      rl.close();
+      console.log("To be implemented")
+      await agentOptions(agent)
+    }
+    // rl.close();
+  });
 }
 
 export default run

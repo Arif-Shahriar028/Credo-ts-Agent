@@ -1,6 +1,5 @@
 import { Agent, KeyType, TypedArrayEncoder} from '@aries-framework/core';
 
-
 import initializeIssuerAgent from '../src/issuer/initialize-issuer'
 import setupConnectionListener from '../src/issuer/connection-listener'
 import createNewInvitation from '../src/issuer/create-invitation'
@@ -88,9 +87,9 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
   
   //* Credential listener
 
-  console.log("==============>> Select option <<================")
+  console.log("\n\n==============>> Select option <<================\n")
   console.log("1. Issue Credential")
-  console.log("2. Create New Invitation")
+  console.log("2. Create New Invitation\n")
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -99,9 +98,10 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
 
   rl.question('What is your choosen option (number) : ', async (option: string) => {
     if(option == '1'){
-      console.log("===========>>> Setting up credential listener <<<===========")
-      setUpCredentialListener(agent, async ()=>{
+      console.log("===========>>> Setting up credential listener <<<===========\n")
+      setUpCredentialListener(agent, async (agent: Agent)=>{
         console.log("credential issuence done")
+        rl.close();
         await agentOptions(agent, connectionId)
       })
 
@@ -109,6 +109,7 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
     }
 
     else if(option == '2'){
+      rl.close();
       await createInvitation(agent)
     }
     // rl.close();
