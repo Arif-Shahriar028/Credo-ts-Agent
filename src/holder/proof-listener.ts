@@ -1,25 +1,36 @@
 import { Agent, ProofEventTypes, ProofState, ProofStateChangedEvent } from "@aries-framework/core";
+import { anoncreds } from "@hyperledger/anoncreds-nodejs";
+import { credentialDefinitionId } from "../../utils/values";
 
-const setUpProofListener = (agent: Agent, cb: (...args: any) => void) =>{
-  agent.events.on<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged, async ({ payload }) => {
+const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any) => void) =>{
 
-    console.log(">>>>>  " + payload.proofRecord.state)
+
+  const eventHandler = async ({payload}: ProofStateChangedEvent) =>{
+    console.log("\n>>>>>  " + payload.proofRecord.state)
     
-    // if(payload.proofRecord.state === ProofState.RequestReceived){
-    //   await agent.proofs.requestProof({
-    //     connectionId: connectionId,
-    //     protocolVersion: 'v2',
-    //     proofFormats: {
-    //       anoncreds: {
-    //         attributes: [{ name: 'age', value: 'value' }],
-    //       },
-    //     },
-    //   })
-    // }
-    // else if(payload.proofRecord.state === ProofState.Done){
-    //   console.log("Proof accepted")
-    // }
-  })
+    if(payload.proofRecord.state === ProofState.RequestReceived){
+
+      const requestedCredentials = await holder.proofs.selectCredentialsForRequest({proofRecordId: payload.proofRecord.id,});
+      
+      await holder.proofs.acceptRequest({
+        proofRecordId: payload.proofRecord.id,
+        proofFormats: requestedCredentials.proofFormats, 
+      });
+
+      // const credentialsForRequest = await holder.proofs.getCredentialsForRequest({
+      //   proofRecordId: payload.proofRecord.id
+      // });
+  
+      // console.log("Credentials for request:", credentialsForRequest.proofFormats.anoncreds.attributes);
+
+    }
+    else if(payload.proofRecord.state === ProofState.Done){
+      console.log("Proof accepted")
+    }
+  }
+
+  holder.events.off(ProofEventTypes.ProofStateChanged, eventHandler)
+  holder.events.on(ProofEventTypes.ProofStateChanged, eventHandler)
 }
 
 export default setUpProofListener

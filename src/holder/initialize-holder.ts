@@ -1,5 +1,5 @@
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, V1ProofProtocol, AnonCredsProofFormatService } from '@aries-framework/anoncreds';
-import { DidsModule, CredentialsModule, V2CredentialProtocol, ProofsModule, V2ProofProtocol } from '@aries-framework/core';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, V1ProofProtocol, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
+import { DidsModule, CredentialsModule, V2CredentialProtocol, ProofsModule, V2ProofProtocol, AutoAcceptProof } from '@aries-framework/core';
 import {
   AskarModule,
   Agent,
@@ -66,9 +66,10 @@ const initializeHolderAgent = async () => {
       proofs: new ProofsModule({
         proofProtocols: [
           new V2ProofProtocol({
-            proofFormats: [new AnonCredsProofFormatService()],
+            proofFormats: [new AnonCredsProofFormatService(), new LegacyIndyProofFormatService()],
           }),
         ],
+        autoAcceptProofs: AutoAcceptProof.ContentApproved
       }),
       credentials: new CredentialsModule({
         credentialProtocols: [

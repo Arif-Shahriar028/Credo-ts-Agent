@@ -1,4 +1,4 @@
-import { CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, TypedArrayEncoder, V2CredentialProtocol } from '@aries-framework/core';
+import { AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '@aries-framework/core';
 import {
   AskarModule,
   Agent,
@@ -23,7 +23,7 @@ import {
   indyVdr
 } from '../../dependencies';
 
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService } from '@aries-framework/anoncreds';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
 
 
 const initializeIssuerAgent = async () => {
@@ -67,6 +67,14 @@ const initializeIssuerAgent = async () => {
       dids: new DidsModule({
         registrars: [new IndyVdrIndyDidRegistrar()],
         resolvers: [new IndyVdrIndyDidResolver()],
+      }),
+      proofs: new ProofsModule({
+        proofProtocols: [
+          new V2ProofProtocol({
+            proofFormats: [new AnonCredsProofFormatService(), new LegacyIndyProofFormatService()],
+          }),
+        ],
+        autoAcceptProofs: AutoAcceptProof.ContentApproved
       }),
       credentials: new CredentialsModule({
         credentialProtocols: [

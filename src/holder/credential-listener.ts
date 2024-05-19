@@ -19,6 +19,7 @@ const setUpCredentialListener = (agent: Agent, cb: (...args: any) => void) => {
     else if (payload.credentialRecord.state === CredentialState.Done) {
       console.log("Full Credential record");
       console.log(payload.credentialRecord);
+
       console.log(`Credential for credential id ${payload.credentialRecord.id} is accepted`);
 
       cb(agent);

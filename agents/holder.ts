@@ -7,6 +7,7 @@ import receiveInvitation from '../src/holder/receive-invitation';
 import setUpProofListener from '../src/holder/proof-listener';
 
 import * as readline from 'readline';
+import proposeProof from '../src/holder/proof-events';
 
 
 const run = async () => {
@@ -52,7 +53,7 @@ const inputInvitation = async (agent: Agent, rl: any)=>{
   });
 }
 
-const agentOptions = async (agent: Agent, connectionId: string, rl: any) =>{
+const agentOptions = async (agent: Agent, connectionId: string, rl: any, credentialRecordId?:string) =>{
   
   console.log("\n\n==============>> Select option <<================\n")
   console.log("1. Input New Invitation")
@@ -68,9 +69,17 @@ const agentOptions = async (agent: Agent, connectionId: string, rl: any) =>{
       // const connectionId = await agent.connections.
       console.log("Connection id is: ", connectionId)
 
-      setUpProofListener(agent, ()=>{
+      setUpProofListener(agent, connectionId, ()=>{
         console.log("Proof presention complete")
       })
+
+      try{
+        const proposeResult = await proposeProof(agent, connectionId)
+        console.log(proposeResult)
+      }catch(error){
+        console.log(error)
+        await agentOptions(agent, connectionId, rl)
+      }
 
       await agentOptions(agent, connectionId, rl)
     }

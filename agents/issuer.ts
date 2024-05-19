@@ -9,6 +9,7 @@ import registerCredentialDefinition from '../src/issuer/register-credential-def'
 import { anoncreds } from '@hyperledger/anoncreds-nodejs';
 import * as readline from 'readline';
 import issueCredential from '../src/issuer/issue-credential';
+import setUpProofListener from '../src/issuer/proof-listener';
 
 
 const seed = TypedArrayEncoder.fromString(`12345678912345678912345678912347`)
@@ -77,6 +78,15 @@ const createInvitation = async(agent: Agent)=>{
 
   setupConnectionListener(agent, outOfBandRecord, async(agent, connectionId) => {
       console.log('We now have an active connection with Bob, connection Id :' + connectionId)
+
+      //* Proof listener
+
+      console.log("=======>>>> Setting up Proof Listener <<<<========")
+      setUpProofListener(agent, ()=>{
+        console.log("proof presentation complete")
+      })
+
+      //* Agent options
       await agentOptions(agent, connectionId)
     } 
   )
@@ -99,6 +109,7 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
   rl.question('What is your choosen option (number) : ', async (option: string) => {
     if(option == '1'){
       console.log("===========>>> Setting up credential listener <<<===========\n")
+      
       setUpCredentialListener(agent, async (agent: Agent)=>{
         console.log("credential issuence done")
         rl.close();
