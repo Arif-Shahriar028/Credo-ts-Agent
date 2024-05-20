@@ -8,7 +8,20 @@ const proposeProof = async(agent: Agent, connectionId: string) =>{
       protocolVersion: 'v2',
       proofFormats: {
         anoncreds: {
-          attributes: [{ name: 'key', value: 'value', "cred_def_id": credentialDefinitionId }],
+          attributes: [
+            { 
+              name: 'name',
+              restrictions: [{
+                cred_def_id: credentialDefinitionId ,
+              }]
+            }, 
+            {
+              name: 'age',
+              restrictions: [{
+                cred_def_id: credentialDefinitionId ,
+              }]
+            }
+          ],
           predicates: []
         },
       },
@@ -19,3 +32,5 @@ const proposeProof = async(agent: Agent, connectionId: string) =>{
 }
 
 export default proposeProof
+
+// {name: 'age', p_type: '>=', p_value: '18'}

@@ -95,36 +95,37 @@ const createInvitation = async(agent: Agent)=>{
 
 const agentOptions = async (agent: Agent, connectionId: string) =>{
   
-  //* Credential listener
-
-  console.log("\n\n==============>> Select option <<================\n")
-  console.log("1. Issue Credential")
-  console.log("2. Create New Invitation\n")
-
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  rl.question('What is your choosen option (number) : ', async (option: string) => {
-    if(option == '1'){
-      console.log("===========>>> Setting up credential listener <<<===========\n")
-      
-      setUpCredentialListener(agent, async (agent: Agent)=>{
-        console.log("credential issuence done")
-        rl.close();
-        await agentOptions(agent, connectionId)
-      })
+  rl.question(
+    "\n\n==============>> Select option <<================\n\n"+
+    "1. Issue Credential\n"+
+    "2. Create New Invitation\n\n"+
+    "What is your choosen option (number) : \n", 
+      async (option: string) => {
+        if(option == '1'){
+          console.log("===========>>> Setting up credential listener <<<===========\n")
+          
+          //* Credential listener
+          setUpCredentialListener(agent, async (agent: Agent)=>{
+            console.log("credential issuence done")
+            rl.close();
+            await agentOptions(agent, connectionId)
+          })
 
-      await issueCredential(agent, connectionId)
-    }
+          await issueCredential(agent, connectionId)
+        }
 
-    else if(option == '2'){
-      rl.close();
-      await createInvitation(agent)
+        else if(option == '2'){
+          rl.close();
+          await createInvitation(agent)
+        }
+        // rl.close();
     }
-    // rl.close();
-  });
+  );
 }
 
 

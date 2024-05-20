@@ -20,6 +20,7 @@ const setUpProofListener = (agent: Agent, cb: (...args: any) => void) =>{
     }
     else if(payload.proofRecord.state === ProofState.Done){
       console.log("Proof accepted")
+      console.log("Is verified: ", payload.proofRecord)
     }
   }
 

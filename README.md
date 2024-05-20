@@ -49,9 +49,9 @@ Then: `yarn refresh`
 - [x] issuer credential definition creation
 - [x] issuer credential offer
 - [x] holder credential request accept
-- [ ] verifier proof request send
-- [ ] holder proof response send
-- [ ] verifier proof verification
+- [x] verifier proof request send
+- [x] holder proof response send
+- [x] verifier proof verification
 
 ### During credential exchange
 

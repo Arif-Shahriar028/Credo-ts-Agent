@@ -55,35 +55,38 @@ const inputInvitation = async (agent: Agent, rl: any)=>{
 
 const agentOptions = async (agent: Agent, connectionId: string, rl: any, credentialRecordId?:string) =>{
   
-  console.log("\n\n==============>> Select option <<================\n")
-  console.log("1. Input New Invitation")
-  console.log("2. Create Proof Request\n")
 
-  rl.question('What is your choosen option (number) : ', async (option: string) => {
-    if(option == '1'){
-      await inputInvitation(agent, rl)
+  rl.question(
+    "\n\n==============>> Select option <<================\n\n"+
+    "1. Input New Invitation\n"+
+    "2. Create Proof Request\n\n"+
+    'What is your choosen option (number) : \n', 
+      async (option: string) => {
+        if(option == '1'){
+          await inputInvitation(agent, rl)
+        }
+
+        else if(option == '2'){
+          // console.log("To be implemented")
+          // const connectionId = await agent.connections.
+          console.log("Connection id is: ", connectionId)
+
+          setUpProofListener(agent, connectionId, ()=>{
+            console.log("Proof presention complete")
+          })
+
+          try{
+            const proposeResult = await proposeProof(agent, connectionId)
+            console.log(proposeResult)
+          }catch(error){
+            console.log(error)
+            await agentOptions(agent, connectionId, rl)
+          }
+
+          await agentOptions(agent, connectionId, rl)
+        }
     }
-
-    else if(option == '2'){
-      // console.log("To be implemented")
-      // const connectionId = await agent.connections.
-      console.log("Connection id is: ", connectionId)
-
-      setUpProofListener(agent, connectionId, ()=>{
-        console.log("Proof presention complete")
-      })
-
-      try{
-        const proposeResult = await proposeProof(agent, connectionId)
-        console.log(proposeResult)
-      }catch(error){
-        console.log(error)
-        await agentOptions(agent, connectionId, rl)
-      }
-
-      await agentOptions(agent, connectionId, rl)
-    }
-  });
+  );
 }
 
 

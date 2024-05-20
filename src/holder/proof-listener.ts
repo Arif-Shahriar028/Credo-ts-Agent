@@ -11,7 +11,7 @@ const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any
     if(payload.proofRecord.state === ProofState.RequestReceived){
 
       const requestedCredentials = await holder.proofs.selectCredentialsForRequest({proofRecordId: payload.proofRecord.id,});
-      
+      console.log("requested credential: ", requestedCredentials.proofFormats.anoncreds.attributes)
       await holder.proofs.acceptRequest({
         proofRecordId: payload.proofRecord.id,
         proofFormats: requestedCredentials.proofFormats, 
@@ -26,6 +26,7 @@ const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any
     }
     else if(payload.proofRecord.state === ProofState.Done){
       console.log("Proof accepted")
+      console.log("Is verified: ", payload.proofRecord)
     }
   }
 
