@@ -1,0 +1,1 @@
+export const credentialDefinitionId = "did:indy:bcovrin:test:LvR6LGmiGzfowBgWtUA5oi/anoncreds/v0/CLAIM_DEF/697659/V1.4"

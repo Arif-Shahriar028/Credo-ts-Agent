@@ -7,8 +7,7 @@ import {
 } from '../../dependencies';
 
 const setupConnectionListener = (agent: Agent, cb: (...args: any) => void) => {
-  agent.events.on<ConnectionStateChangedEvent>(ConnectionEventTypes.ConnectionStateChanged, ({ payload }) => {
-
+  const eventHandler = ({payload}: ConnectionStateChangedEvent) =>{
     console.log("================== Connection Record state =====================")
 	  console.log("payload.connectionRecord.state : "+payload.connectionRecord.state)
 
@@ -19,11 +18,16 @@ const setupConnectionListener = (agent: Agent, cb: (...args: any) => void) => {
       console.log("This did: "+payload.connectionRecord.did+" , Thread id"+payload.connectionRecord.threadId)
       console.log("Their did: "+payload.connectionRecord.theirDid + ", Their label: "+ payload.connectionRecord.theirLabel)
       console.log("connection id: "+payload.connectionRecord.id)
-      cb(agent)
+      
+      cb(agent, payload.connectionRecord.id)
+
+      agent.events.off(ConnectionEventTypes.ConnectionStateChanged, eventHandler)
       // We exit the flow
       // process.exit(0)
     }
-  })
+  }
+
+  agent.events.on(ConnectionEventTypes.ConnectionStateChanged, eventHandler)
 }
 
 export default setupConnectionListener

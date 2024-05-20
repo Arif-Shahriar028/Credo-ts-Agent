@@ -1,5 +1,5 @@
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService } from '@aries-framework/anoncreds';
-import { DidsModule, CredentialsModule, V2CredentialProtocol } from '@aries-framework/core';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, V1ProofProtocol, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
+import { DidsModule, CredentialsModule, V2CredentialProtocol, ProofsModule, V2ProofProtocol, AutoAcceptProof } from '@aries-framework/core';
 import {
   AskarModule,
   Agent,
@@ -30,7 +30,7 @@ const initializeHolderAgent = async () => {
       id: 'mainHolder',
       key: 'demoagentholder00000000000000000000',
     },
-    endpoints: ['https://aacb-103-96-36-37.ngrok-free.app'],
+    endpoints: ['http://localhost:3002'],
   }
 
   // A new instance of an agent is created here
@@ -62,6 +62,14 @@ const initializeHolderAgent = async () => {
       dids: new DidsModule({
         registrars: [new IndyVdrIndyDidRegistrar()],
         resolvers: [new IndyVdrIndyDidResolver()],
+      }),
+      proofs: new ProofsModule({
+        proofProtocols: [
+          new V2ProofProtocol({
+            proofFormats: [new AnonCredsProofFormatService(), new LegacyIndyProofFormatService()],
+          }),
+        ],
+        autoAcceptProofs: AutoAcceptProof.ContentApproved
       }),
       credentials: new CredentialsModule({
         credentialProtocols: [
