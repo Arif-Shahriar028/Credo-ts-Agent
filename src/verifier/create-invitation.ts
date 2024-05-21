@@ -1,15 +1,21 @@
 import {
   Agent,
 } from '../../dependencies';
-
+import * as QRCode from 'qrcode-terminal';
+import { verifier_endpoint } from '../../utils/values';
 
 const createNewInvitation = async (agent: Agent) => {
   const outOfBandRecord = await agent.oob.createInvitation()
 
-  // console.log(outOfBandRecord.outOfBandInvitation)
+  const invitationUrl = outOfBandRecord.outOfBandInvitation.toUrl({ domain: verifier_endpoint })
+
+  QRCode.generate(invitationUrl, { small: true }, (qrcode: string) => {
+    console.log(qrcode);
+  });
+
 
   return {
-    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3003' }),
+    invitationUrl,
     outOfBandRecord,
   }
 }

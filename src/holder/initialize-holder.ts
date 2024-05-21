@@ -19,6 +19,7 @@ import {
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
 } from '../../dependencies';
+import { genesisUrl, holder_endpoint } from '../../utils/values';
 
 
 const initializeHolderAgent = async () => {
@@ -30,7 +31,7 @@ const initializeHolderAgent = async () => {
       id: 'mainHolder',
       key: 'demoagentholder00000000000000000000',
     },
-    endpoints: ['http://localhost:3002'],
+    endpoints: [holder_endpoint],
   }
 
   // A new instance of an agent is created here
@@ -101,7 +102,7 @@ const initializeHolderAgent = async () => {
 }
 
 async function fetchGenesisString(): Promise<string> {
-  const url = 'http://test.bcovrin.vonx.io/genesis';
+  const url = genesisUrl;
 
   try {
       const response = await fetch(url);

@@ -20,6 +20,7 @@ import {
 } from '../../dependencies';
 
 import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
+import { genesisUrl, verifier_endpoint } from '../../utils/values';
 
 
 const initializeVerifierAgent = async () => {
@@ -31,7 +32,7 @@ const initializeVerifierAgent = async () => {
       id: 'mainVerifier',
       key: 'demoagentverifier0000000000000000000',
     },
-    endpoints: ['http://localhost:3003'],
+    endpoints: [verifier_endpoint],
   }
 
   // A new instance of an agent is created here
@@ -103,7 +104,7 @@ const initializeVerifierAgent = async () => {
 }
 
 async function fetchGenesisString(): Promise<string> {
-  const url = 'http://test.bcovrin.vonx.io/genesis';
+  const url = genesisUrl
   try {
       const response = await fetch(url);
       if (!response.ok) {
