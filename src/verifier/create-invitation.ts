@@ -1,16 +1,15 @@
 import {
   Agent,
 } from '../../dependencies';
-// import qr from 'qrcode'
+
 
 const createNewInvitation = async (agent: Agent) => {
   const outOfBandRecord = await agent.oob.createInvitation()
 
-  // const invitationUrl = outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3001' })
-
+  // console.log(outOfBandRecord.outOfBandInvitation)
 
   return {
-    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3001' }),
+    invitationUrl: outOfBandRecord.outOfBandInvitation.toUrl({ domain: 'http://localhost:3003' }),
     outOfBandRecord,
   }
 }

@@ -12,9 +12,8 @@ import issueCredential from '../src/issuer/issue-credential';
 import setUpProofListener from '../src/issuer/proof-listener';
 
 
-const seed = TypedArrayEncoder.fromString(`12345678912345678912345678912347`)
-const unqualifiedIndyDid = `LvR6LGmiGzfowBgWtUA5oi` //& returned after registering seed on bcovrin
-const indyDid = `did:indy:bcovrin:test:${unqualifiedIndyDid}`
+import { issuer_seed } from "../utils/values"
+import { issuer_indyDid } from "../utils/values"
 
 
 
@@ -31,11 +30,11 @@ const run = async () => {
 
   console.log("========= Importing DIDs into wallet ===========")
   await issuerAgent.dids.import({
-    did: indyDid,
+    did: issuer_indyDid,
     overwrite: true,
     privateKeys: [
       {
-        privateKey: seed,
+        privateKey: issuer_seed,
         keyType: KeyType.Ed25519,
       },
     ],

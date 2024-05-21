@@ -1,5 +1,5 @@
 import { Agent } from "@aries-framework/core"
-import { credentialDefinitionId } from "../../utils/values"
+import { issuer_credentialDefinitionId } from "../../utils/values"
 
 const proposeProof = async(agent: Agent, connectionId: string) =>{
     console.log("========= Proposing for proof request ===========")
@@ -12,13 +12,13 @@ const proposeProof = async(agent: Agent, connectionId: string) =>{
             { 
               name: 'name',
               restrictions: [{
-                cred_def_id: credentialDefinitionId ,
+                cred_def_id: issuer_credentialDefinitionId ,
               }]
             }, 
             {
               name: 'age',
               restrictions: [{
-                cred_def_id: credentialDefinitionId ,
+                cred_def_id: issuer_credentialDefinitionId ,
               }]
             }
           ],

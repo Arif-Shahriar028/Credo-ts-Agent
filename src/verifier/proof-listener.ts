@@ -19,8 +19,8 @@ const setUpProofListener = (agent: Agent, cb: (...args: any) => void) =>{
       await agent.proofs.acceptPresentation({proofRecordId: payload.proofRecord.id})
     }
     else if(payload.proofRecord.state === ProofState.Done){
-      console.log("Proof accepted")
       console.log("Is verified: ", payload.proofRecord)
+      cb()
     }
   }
 
