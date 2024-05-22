@@ -11,11 +11,10 @@ const setUpProofListener = (agent: Agent, cb: (...args: any) => void) =>{
 
   const eventHandler = async ({payload}: ProofStateChangedEvent) =>{
     console.log("\n>>>>>  " + payload.proofRecord.state)
-    
-    if(payload.proofRecord.state === ProofState.ProposalReceived){
-      await agent.proofs.acceptProposal({proofRecordId: payload.proofRecord.id})
-    }
-    else if(payload.proofRecord.state === ProofState.RequestReceived){
+    // if(payload.proofRecord.state === ProofState.ProposalReceived){
+    //   await agent.proofs.acceptProposal({proofRecordId: payload.proofRecord.id})
+    // }
+     if(payload.proofRecord.state === ProofState.RequestReceived){
       await agent.proofs.acceptPresentation({proofRecordId: payload.proofRecord.id})
     }
     else if(payload.proofRecord.state === ProofState.Done){

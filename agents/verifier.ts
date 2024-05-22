@@ -5,6 +5,7 @@ import createNewInvitation from '../src/verifier/create-invitation'
 import * as readline from 'readline';
 import setUpProofListener from '../src/verifier/proof-listener';
 import initializeVerifierAgent from '../src/verifier/initialize-verifier';
+import requestProof from '../src/verifier/proof-events';
 
 
 const run = async () => {
@@ -43,6 +44,14 @@ const createInvitation = async(agent: Agent)=>{
       setUpProofListener(agent, ()=>{
         console.log("proof presentation complete")
       })
+
+      try{
+        const proposeResult = await requestProof(agent, connectionId)
+        console.log(proposeResult)
+      }catch(error){
+        console.log(error)
+        await agentOptions(agent, connectionId)
+      }
 
       //* Agent options
       await agentOptions(agent, connectionId)

@@ -10,3 +10,6 @@ export const holder_endpoint = 'https://7971-103-96-36-37.ngrok-free.app'
 export const verifier_endpoint = 'https://397f-103-96-36-37.ngrok-free.app'
 
 export const genesisUrl = 'http://test.bcovrin.vonx.io/genesis'
+
+export const issued_name = 'Kazi Arif Shahriar'
+export const issued_age = '24'
