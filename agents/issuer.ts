@@ -14,7 +14,8 @@ import issueCredential from '../src/issuer/issue-credential';
 import { issuer_seed } from "../utils/values"
 import { issuer_indyDid } from "../utils/values"
 
-
+let schemaId = ''
+let credentialDefinitionId = ''
 
 const run = async () => {
 
@@ -47,7 +48,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as schema is already published into the ledger
    */
-  // const schemaResult = await registerSchema(issuerAgent, issuer_indyDid)
+  schemaId = await registerSchema(issuerAgent, issuer_indyDid)
   
 
 
@@ -55,7 +56,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as credential definition is already published into the ledger
    */
-  // const credentialDefinitionResult = await registerCredentialDefinition(issuerAgent, issuer_indyDid, schemaResult)
+  credentialDefinitionId = await registerCredentialDefinition(issuerAgent, issuer_indyDid, schemaId)
   
  
   
@@ -105,12 +106,11 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
           
           //* Credential listener
           setUpCredentialListener(agent, async (agent: Agent)=>{
-            console.log("credential issuence done")
             rl.close();
             await agentOptions(agent, connectionId)
           })
 
-          await issueCredential(agent, connectionId)
+          await issueCredential(agent, connectionId, credentialDefinitionId)
         }
 
         else if(option == '2'){

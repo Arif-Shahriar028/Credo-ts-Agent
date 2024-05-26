@@ -27,6 +27,15 @@ const setUpCredentialListener = (agent: Agent, cb: (...args: any) => void) => {
       // Remove the event listener
       agent.events.off(CredentialEventTypes.CredentialStateChanged, eventHandler);
     }
+    else if(payload.credentialRecord.state === CredentialState.Abandoned){
+      console.log("Credential rejected by the holder, NOT ACCEPTED!")
+
+      // Execute the callback function
+      cb(agent);
+      
+      // Remove the event listener
+      agent.events.off(CredentialEventTypes.CredentialStateChanged, eventHandler);
+    }
   };
 
   // Attach the event handler to the event
