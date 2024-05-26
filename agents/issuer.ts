@@ -9,14 +9,13 @@ import registerCredentialDefinition from '../src/issuer/register-credential-def'
 import { anoncreds } from '@hyperledger/anoncreds-nodejs';
 import * as readline from 'readline';
 import issueCredential from '../src/issuer/issue-credential';
-import setUpProofListener from '../src/issuer/proof-listener';
 
 
-const seed = TypedArrayEncoder.fromString(`12345678912345678912345678912347`)
-const unqualifiedIndyDid = `LvR6LGmiGzfowBgWtUA5oi` //& returned after registering seed on bcovrin
-const indyDid = `did:indy:bcovrin:test:${unqualifiedIndyDid}`
+import { issuer_seed } from "../utils/values"
+import { issuer_indyDid } from "../utils/values"
 
-
+let schemaId = ''
+let credentialDefinitionId = ''
 
 const run = async () => {
 
@@ -26,16 +25,19 @@ const run = async () => {
   const issuerAgent = await initializeIssuerAgent()
   console.log("======================== Issuer Agent =======================")
 
+  // const secretIds = await (issuerAgent as any).modules.anoncreds.getLinkSecretIds()
+
+  // console.log(`Secret id: ${secretIds}`)
 
   //* Importing public did from ledger to agent wallet
 
   console.log("========= Importing DIDs into wallet ===========")
   await issuerAgent.dids.import({
-    did: indyDid,
+    did: issuer_indyDid,
     overwrite: true,
     privateKeys: [
       {
-        privateKey: seed,
+        privateKey: issuer_seed,
         keyType: KeyType.Ed25519,
       },
     ],
@@ -46,7 +48,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as schema is already published into the ledger
    */
-  // const schemaResult = await registerSchema(issuerAgent, indyDid)
+  schemaId = await registerSchema(issuerAgent, issuer_indyDid)
   
 
 
@@ -54,7 +56,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as credential definition is already published into the ledger
    */
-  // const credentialDefinitionResult = await registerCredentialDefinition(issuerAgent, indyDid, schemaResult)
+  credentialDefinitionId = await registerCredentialDefinition(issuerAgent, issuer_indyDid, schemaId)
   
  
   
@@ -78,13 +80,6 @@ const createInvitation = async(agent: Agent)=>{
 
   setupConnectionListener(agent, outOfBandRecord, async(agent, connectionId) => {
       console.log('We now have an active connection with Bob, connection Id :' + connectionId)
-
-      //* Proof listener
-
-      console.log("=======>>>> Setting up Proof Listener <<<<========")
-      setUpProofListener(agent, ()=>{
-        console.log("proof presentation complete")
-      })
 
       //* Agent options
       await agentOptions(agent, connectionId)
@@ -111,12 +106,11 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
           
           //* Credential listener
           setUpCredentialListener(agent, async (agent: Agent)=>{
-            console.log("credential issuence done")
             rl.close();
             await agentOptions(agent, connectionId)
           })
 
-          await issueCredential(agent, connectionId)
+          await issueCredential(agent, connectionId, credentialDefinitionId)
         }
 
         else if(option == '2'){

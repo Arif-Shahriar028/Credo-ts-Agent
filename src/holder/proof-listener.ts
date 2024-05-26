@@ -1,6 +1,4 @@
 import { Agent, ProofEventTypes, ProofState, ProofStateChangedEvent } from "@aries-framework/core";
-import { anoncreds } from "@hyperledger/anoncreds-nodejs";
-import { credentialDefinitionId } from "../../utils/values";
 
 const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any) => void) =>{
 
@@ -27,6 +25,7 @@ const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any
     else if(payload.proofRecord.state === ProofState.Done){
       console.log("Proof accepted")
       console.log("Is verified: ", payload.proofRecord)
+      holder.events.off(ProofEventTypes.ProofStateChanged, eventHandler)
     }
   }
 

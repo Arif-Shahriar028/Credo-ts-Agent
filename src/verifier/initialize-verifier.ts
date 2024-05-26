@@ -3,12 +3,8 @@ import {
   AskarModule,
   Agent,
   InitConfig,
-  ConnectionEventTypes,
-  ConnectionStateChangedEvent,
   WsOutboundTransport,
   HttpOutboundTransport,
-  DidExchangeState,
-  OutOfBandRecord,
   ConnectionsModule,
   agentDependencies,
   HttpInboundTransport,
@@ -24,19 +20,19 @@ import {
 } from '../../dependencies';
 
 import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
-import { genesisUrl, issuer_endpoint } from '../../utils/values';
+import { genesisUrl, verifier_endpoint } from '../../utils/values';
 
 
-const initializeIssuerAgent = async () => {
+const initializeVerifierAgent = async () => {
   const genesisString = await fetchGenesisString()
   
   const config: InitConfig = {
-    label: 'demo-agent-issuer',
+    label: 'demo-agent-verifier',
     walletConfig: {
-      id: 'mainIssuer',
-      key: 'demoagentissuer0000000000000000000',
+      id: 'mainVerifier',
+      key: 'demoagentverifier0000000000000000000',
     },
-    endpoints: [issuer_endpoint],
+    endpoints: [verifier_endpoint],
   }
 
   // A new instance of an agent is created here
@@ -99,7 +95,7 @@ const initializeIssuerAgent = async () => {
   agent.registerOutboundTransport(new HttpOutboundTransport())
 
   // Register a simple `Http` inbound transport
-  agent.registerInboundTransport(new HttpInboundTransport({ port: 3001 }))
+  agent.registerInboundTransport(new HttpInboundTransport({ port: 3003 }))
 
   // Initialize the agent
   await agent.initialize()
@@ -124,4 +120,4 @@ async function fetchGenesisString(): Promise<string> {
 }
 
 
-export default initializeIssuerAgent;
+export default initializeVerifierAgent;

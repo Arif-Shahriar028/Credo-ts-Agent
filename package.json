@@ -2,7 +2,8 @@
   "scripts": {
     "refresh": "rm -rf node_modules yarn.lock && yarn",
     "issuer": "npx ts-node agents/issuer.ts",
-    "holder": "npx ts-node agents/holder.ts"
+    "holder": "npx ts-node agents/holder.ts",
+    "verifier": "npx ts-node agents/verifier.ts"
   },
   "dependencies": {
     "@aries-framework/anoncreds": "^0.4.0",
@@ -15,9 +16,12 @@
     "@hyperledger/anoncreds-nodejs": "^0.1.0",
     "@hyperledger/aries-askar-nodejs": "^0.1.0",
     "@hyperledger/indy-vdr-nodejs": "^0.1.0",
-    "@types/node": "^20.12.11"
+    "@types/node": "^20.12.11",
+    "qrcode": "^1.5.3",
+    "qrcode-terminal": "^0.12.0"
   },
   "devDependencies": {
+    "@types/qrcode-terminal": "^0.12.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },

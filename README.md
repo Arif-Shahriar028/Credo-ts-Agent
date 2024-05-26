@@ -22,11 +22,13 @@ yarn install
 yarn issuer
 ```
 
-2. In Second terminal, run `Holder` agent:
+2. In Second terminal, run `Verifier` agent:
 
 ```
-yarn holder
+yarn verifier
 ```
+
+Use Bifold mobile wallet app as a holder.
 
 ### Make terminal output faster
 
