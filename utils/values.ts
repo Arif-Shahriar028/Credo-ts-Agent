@@ -5,7 +5,7 @@ export const issuer_seed = TypedArrayEncoder.fromString(`12345678912345678912345
 export const issuer_unqualifiedIndyDid = `LvR6LGmiGzfowBgWtUA5oi` //& returned after registering seed on bcovrin
 export const issuer_indyDid = `did:indy:bcovrin:test:${issuer_unqualifiedIndyDid}`
 
-export const issuer_endpoint = 'https://b7df-103-96-36-37.ngrok-free.app'
+export const issuer_endpoint = 'https://d12b-103-96-36-37.ngrok-free.app'
 export const holder_endpoint = 'https://7971-103-96-36-37.ngrok-free.app'
 export const verifier_endpoint = 'https://397f-103-96-36-37.ngrok-free.app'
 

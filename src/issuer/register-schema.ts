@@ -9,7 +9,7 @@ const registerSchema = async(agent: Agent, indyDid: string)=>{
       attrNames: ['name', 'age'],
       issuerId: indyDid,
       name: 'Certificate schema',
-      version: '1.0.3',
+      version: '1.0.4',
     },
     options: {},
   })

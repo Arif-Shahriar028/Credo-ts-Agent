@@ -24,6 +24,9 @@ const run = async () => {
   const issuerAgent = await initializeIssuerAgent()
   console.log("======================== Issuer Agent =======================")
 
+  // const secretIds = await (issuerAgent as any).modules.anoncreds.getLinkSecretIds()
+
+  // console.log(`Secret id: ${secretIds}`)
 
   //* Importing public did from ledger to agent wallet
 
@@ -44,7 +47,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as schema is already published into the ledger
    */
-  // const schemaResult = await registerSchema(issuerAgent, indyDid)
+  // const schemaResult = await registerSchema(issuerAgent, issuer_indyDid)
   
 
 
@@ -52,7 +55,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as credential definition is already published into the ledger
    */
-  // const credentialDefinitionResult = await registerCredentialDefinition(issuerAgent, indyDid, schemaResult)
+  // const credentialDefinitionResult = await registerCredentialDefinition(issuerAgent, issuer_indyDid, schemaResult)
   
  
   
