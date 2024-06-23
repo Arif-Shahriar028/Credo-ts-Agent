@@ -26,7 +26,7 @@ const registerSchema = async(agent: Agent, indyDid: string)=>{
   //* SchemaResult is returned as a array 
   if(schemaResult.length >0){
     console.log("Schema already exists")
-    console.log(`Schema Id: `, schemaResult[0].schemaId)
+    console.log(`Schema : \n`, schemaResult)
     return schemaResult[0].schemaId
   } 
   

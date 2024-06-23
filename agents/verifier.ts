@@ -13,54 +13,58 @@ const run = async () => {
   //* Initialize Agent
 
   console.log('Initializing Verifier agent...')
-  const issuerAgent = await initializeVerifierAgent()
+  const verifierAgent = await initializeVerifierAgent()
   console.log("======================== Verifier Agent =======================")
 
 
-  //* Creating invitation
+  //* Setting up proof listener
+  setUpProofListener(verifierAgent, ()=>{
+    console.log("proof presentation complete")
 
-  await createInvitation(issuerAgent)
+  })
+
+  try{
+    const proofRecord = await requestProof(verifierAgent)
+    console.log(proofRecord)
+  }catch(error){
+    console.log(error)
+    // await agentOptions(verifierAgent)
+  }
+  // await createInvitation(issuerAgent)
+
 }
 
 
 const createInvitation = async(agent: Agent)=>{
   
   console.log('Creating the invitation')
-  const { outOfBandRecord, invitationUrl } = await createNewInvitation(agent)
+  // const { outOfBandRecord, invitationUrl } = await createNewInvitation(agent)
 
   console.log("============== Invitation URL ==============")
-  console.log(invitationUrl)
+  // console.log(invitationUrl)
   console.log("=============================================")
   console.log('Listening for connection changes...')
 
   //* Connection Listener
 
-  setupConnectionListener(agent, outOfBandRecord, async(agent, connectionId) => {
-      console.log('We now have an active connection with Bob, connection Id :' + connectionId)
+  // setupConnectionListener(agent, outOfBandRecord, async(agent, connectionId) => {
+  //     console.log('We now have an active connection with Bob, connection Id :' + connectionId)
 
-      //* Proof listener
+  //     //* Proof listener
 
-      console.log("=======>>>> Setting up Proof Listener <<<<========")
-      setUpProofListener(agent, ()=>{
-        console.log("proof presentation complete")
-      })
+  //     console.log("=======>>>> Setting up Proof Listener <<<<========")
+      
 
-      try{
-        const proposeResult = await requestProof(agent, connectionId)
-        console.log(proposeResult)
-      }catch(error){
-        console.log(error)
-        await agentOptions(agent, connectionId)
-      }
+      
 
-      //* Agent options
-      await agentOptions(agent, connectionId)
-    } 
-  )
+  //     //* Agent options
+  //     await agentOptions(agent)
+  //   } 
+  // )
 }
 
 
-const agentOptions = async (agent: Agent, connectionId: string) =>{
+const agentOptions = async (agent: Agent) =>{
   
   const rl = readline.createInterface({
     input: process.stdin,

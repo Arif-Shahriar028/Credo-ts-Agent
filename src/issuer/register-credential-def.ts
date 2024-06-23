@@ -20,7 +20,7 @@ const registerCredentialDefinition = async(agent: Agent, issuerId: string, schem
 
   if(credentialDefinitionResult.length > 0){
     console.log("Credential definition already existed")
-    console.log("Credential definition id: ", credentialDefinitionResult[0]._tags.unqualifiedCredentialDefinitionId)
+    console.log("Credential definition  \n", credentialDefinitionResult)
     return credentialDefinitionResult[0]._tags.unqualifiedCredentialDefinitionId
   }
 
