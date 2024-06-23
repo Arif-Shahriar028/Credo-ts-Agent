@@ -36,8 +36,8 @@ const requestProof = async(agent: Agent) =>{
       proofFormats: {
         anoncreds: {
           nonce: "1104330525903017641791888",
-          name: 'National Id',
-          version: '1.0.1',
+          name: 'Certificate schema',
+          version: '1.0.4',
           requestedAttributes: {
             group1: {
               name: ['name', 'age'],
