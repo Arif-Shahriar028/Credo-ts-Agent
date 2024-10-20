@@ -1,6 +1,6 @@
 // dependencies.ts
 
-import { AskarModule } from '@aries-framework/askar';
+import { AskarModule } from '@credo-ts/askar';
 import {
   Agent,
   InitConfig,
@@ -11,21 +11,33 @@ import {
   DidExchangeState,
   OutOfBandRecord,
   ConnectionsModule,
-} from '@aries-framework/core';
-import { agentDependencies, HttpInboundTransport } from '@aries-framework/node';
+} from '@credo-ts/core';
+import { agentDependencies, HttpInboundTransport } from '@credo-ts/node';
 import { ariesAskar } from '@hyperledger/aries-askar-nodejs';
 import { anoncreds } from '@hyperledger/anoncreds-nodejs';
-import { AnonCredsModule } from '@aries-framework/anoncreds';
-import { AnonCredsRsModule } from '@aries-framework/anoncreds-rs';
+import { AnonCredsModule, AnonCredsApi } from '@credo-ts/anoncreds';
+
 import {
   IndyVdrAnonCredsRegistry,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
   IndyVdrModule,
-} from '@aries-framework/indy-vdr'
+} from '@credo-ts/indy-vdr'
+
+import {
+  CheqdAnonCredsRegistry,
+  CheqdDidRegistrar,
+  CheqdDidResolver,
+  CheqdModule,
+  CheqdModuleConfig,
+  CheqdDidCreateOptions,
+} from '@credo-ts/cheqd'
 
 import { indyVdr } from '@hyperledger/indy-vdr-nodejs'
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@credo-ts/anoncreds';
+import { AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '@credo-ts/core';
 
+import { ProofEventTypes, ProofState, ProofStateChangedEvent } from '@credo-ts/core'
 
 export {
   AskarModule,
@@ -43,10 +55,19 @@ export {
   ariesAskar,
   anoncreds,
   AnonCredsModule,
-  AnonCredsRsModule,
+  AnonCredsApi,
   IndyVdrAnonCredsRegistry,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
   IndyVdrModule,
-  indyVdr
+  indyVdr,
+  CheqdAnonCredsRegistry,
+  CheqdDidRegistrar,
+  CheqdDidResolver,
+  CheqdModule,
+  CheqdModuleConfig,
+  CheqdDidCreateOptions,
+  LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService,
+  AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol,
+  ProofEventTypes, ProofState, ProofStateChangedEvent
 };

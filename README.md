@@ -8,7 +8,15 @@
 git clone https://github.com/Arif-Shahriar028/Credo-ts-Agent.git
 ```
 
-2. Install modules and packages:
+2. Change endpoints:
+
+Change issuer and verifier endpoints in values.ts file located at `./utils/values.ts`. Place your computers ip address at the url.
+
+3. Add cosmos_payer_seed at .env file:
+
+Create a .env file under project root following the .env.sample file. Add your cheqd secret phrase in cosmos_payer_seed field.
+
+4. Install modules and packages:
 
 ```
 yarn install
@@ -22,13 +30,15 @@ yarn install
 yarn issuer
 ```
 
+After running issuer agent, you will get an invitation url and qr code on terminal. Use them as your need.
+
 2. In Second terminal, run `Verifier` agent:
 
 ```
 yarn verifier
 ```
 
-Use Bifold mobile wallet app as a holder.
+After running holder agent, you will get an invitation url and qr code on terminal. Use them as your need.
 
 ### Make terminal output faster
 

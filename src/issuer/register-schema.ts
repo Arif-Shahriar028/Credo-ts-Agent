@@ -1,7 +1,7 @@
-import { AnonCredsApi } from "@aries-framework/anoncreds"
-import { Agent } from "@aries-framework/core"
+import { AnonCredsApi } from "../../dependencies"
+import { Agent } from "../../dependencies"
 
-const registerSchema = async(agent: Agent, indyDid: string)=>{
+const registerSchema = async(agent: Agent, did: string)=>{
 
   console.log("=========== Registering Schema definition ============")
 
@@ -10,9 +10,9 @@ const registerSchema = async(agent: Agent, indyDid: string)=>{
 
   const schemaTemplate = {
     attrNames: ['name', 'age'],
-    issuerId: indyDid,
+    issuerId: did,
     name: 'Certificate schema',
-    version: '1.0.4',
+    version: `v-${Date.now()}`,
   }
 
   //* Fetching already existed schema in the ledger

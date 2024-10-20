@@ -1,4 +1,4 @@
-import { Agent} from '@aries-framework/core';
+import { Agent} from '../dependencies';
 
 import setupConnectionListener from '../src/verifier/connection-listener'
 import createNewInvitation from '../src/verifier/create-invitation'
@@ -13,13 +13,13 @@ const run = async () => {
   //* Initialize Agent
 
   console.log('Initializing Verifier agent...')
-  const issuerAgent = await initializeVerifierAgent()
+  const verifierAgent = await initializeVerifierAgent()
   console.log("======================== Verifier Agent =======================")
 
 
   //* Creating invitation
 
-  await createInvitation(issuerAgent)
+  await createInvitation(verifierAgent)
 }
 
 
@@ -37,26 +37,21 @@ const createInvitation = async(agent: Agent)=>{
 
   setupConnectionListener(agent, outOfBandRecord, async(agent, connectionId) => {
       console.log('We now have an active connection with Bob, connection Id :' + connectionId)
-
-      //* Proof listener
-
-      console.log("=======>>>> Setting up Proof Listener <<<<========")
-      setUpProofListener(agent, ()=>{
-        console.log("proof presentation complete")
-      })
-
-      try{
-        const proposeResult = await requestProof(agent, connectionId)
-        console.log(proposeResult)
-      }catch(error){
-        console.log(error)
-        await agentOptions(agent, connectionId)
-      }
-
       //* Agent options
       await agentOptions(agent, connectionId)
     } 
   )
+}
+
+const createProofRequest = async(agent: Agent, connectionId: string)=>{
+  try{
+    const proposeResult = await requestProof(agent, connectionId)
+    console.log(proposeResult)
+  }catch(error){
+    console.log(error)
+    await agentOptions(agent, connectionId)
+  }
+
 }
 
 
@@ -69,12 +64,21 @@ const agentOptions = async (agent: Agent, connectionId: string) =>{
 
   rl.question(
     "\n\n==============>> Select option <<================\n\n"+
-    "1. Create New Invitation\n\n"+
+    "1. Create New Invitation\n"+
+    "2. Proof Request\n\n"+
     "What is your choosen option (number) : \n", 
       async (option: string) => {
         if(option == '1'){
           rl.close();
           await createInvitation(agent) 
+        }
+        else if(option == '2'){
+          rl.close();
+          setUpProofListener(agent, async ()=>{
+            console.log("proof presentation complete")
+            await agentOptions(agent, connectionId)
+          })
+          await createProofRequest(agent, connectionId);
         }
         // rl.close();
     }

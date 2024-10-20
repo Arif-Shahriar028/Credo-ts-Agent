@@ -1,4 +1,4 @@
-import { Agent, KeyType, TypedArrayEncoder} from '@aries-framework/core';
+import { Agent, KeyType, TypedArrayEncoder} from '@credo-ts/core';
 
 import initializeIssuerAgent from '../src/issuer/initialize-issuer'
 import setupConnectionListener from '../src/issuer/connection-listener'
@@ -6,13 +6,18 @@ import createNewInvitation from '../src/issuer/create-invitation'
 import setUpCredentialListener from '../src/issuer/credential-listener'
 import registerSchema from '../src/issuer/register-schema';
 import registerCredentialDefinition from '../src/issuer/register-credential-def';
-import { anoncreds } from '@hyperledger/anoncreds-nodejs';
+import { anoncreds } from '../dependencies';
 import * as readline from 'readline';
-import issueCredential from '../src/issuer/issue-credential';
+import { issueCredential, issueCredentialWithoutConn } from '../src/issuer/issue-credential';
 
 
 import { issuer_seed } from "../utils/values"
 import { issuer_indyDid } from "../utils/values"
+import { createCheqdDid } from '../utils/cheqdDid';
+import dotenv from "dotenv";
+
+
+dotenv.config();
 
 let schemaId = ''
 let credentialDefinitionId = ''
@@ -28,12 +33,17 @@ const run = async () => {
   // const secretIds = await (issuerAgent as any).modules.anoncreds.getLinkSecretIds()
 
   // console.log(`Secret id: ${secretIds}`)
+  // TODO: create cheqd did and import it to the agent
+  // const cheqdDid = await createCheqdDid(issuerAgent);
+  const cheqdDid = 'did:cheqd:testnet:94d3cb09-09ba-42a8-bf4f-6c1ef2205ee6';
+  console.log("cheqdDID: ",cheqdDid)
+  // console.log(process.env.COSMOS_PAYER_SEED)
 
   //* Importing public did from ledger to agent wallet
 
   console.log("========= Importing DIDs into wallet ===========")
   await issuerAgent.dids.import({
-    did: issuer_indyDid,
+    did: cheqdDid,
     overwrite: true,
     privateKeys: [
       {
@@ -48,7 +58,7 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as schema is already published into the ledger
    */
-  schemaId = await registerSchema(issuerAgent, issuer_indyDid)
+  schemaId = await registerSchema(issuerAgent, cheqdDid)
   
 
 
@@ -56,13 +66,16 @@ const run = async () => {
   /**
    * ! This functionality is comment out, as credential definition is already published into the ledger
    */
-  credentialDefinitionId = await registerCredentialDefinition(issuerAgent, issuer_indyDid, schemaId)
+  credentialDefinitionId = await registerCredentialDefinition(issuerAgent, cheqdDid, schemaId)
   
  
   
   //* Creating invitation
 
   await createInvitation(issuerAgent)
+
+  //* offer credential without connection
+  // await issueCredentialWithoutConn(issuerAgent, credentialDefinitionId);
 }
 
 

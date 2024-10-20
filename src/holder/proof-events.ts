@@ -1,4 +1,4 @@
-import { Agent } from "@aries-framework/core"
+import { Agent } from "../../dependencies"
 import { issuer_credentialDefinitionId } from "../../utils/values"
 
 const proposeProof = async(agent: Agent, connectionId: string) =>{

@@ -1,5 +1,6 @@
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, V1ProofProtocol, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
-import { DidsModule, CredentialsModule, V2CredentialProtocol, ProofsModule, V2ProofProtocol, AutoAcceptProof } from '@aries-framework/core';
+import { AutoAcceptCredential, OutOfBandModule } from '@credo-ts/core';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '../../dependencies';
+import { DidsModule, CredentialsModule, V2CredentialProtocol, ProofsModule, V2ProofProtocol, AutoAcceptProof } from '../../dependencies';
 import {
   AskarModule,
   Agent,
@@ -12,13 +13,22 @@ import {
   ariesAskar,
   anoncreds,
   AnonCredsModule,
-  AnonCredsRsModule,
   IndyVdrAnonCredsRegistry,
   indyVdr,
   IndyVdrModule,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
 } from '../../dependencies';
+
+import {
+  CheqdAnonCredsRegistry,
+  CheqdDidRegistrar,
+  CheqdDidResolver,
+  CheqdModule,
+  CheqdModuleConfig,
+  CheqdDidCreateOptions,
+} from '../../dependencies'
+
 import { genesisUrl, holder_endpoint } from '../../utils/values';
 
 
@@ -32,6 +42,7 @@ const initializeHolderAgent = async () => {
       key: 'demoagentholder00000000000000000000',
     },
     endpoints: [holder_endpoint],
+    autoUpdateStorageOnStartup: true
   }
 
   // A new instance of an agent is created here
@@ -40,14 +51,12 @@ const initializeHolderAgent = async () => {
     config,
     modules: {
       askar: new AskarModule({ ariesAskar }),
-      //* newly added
-      anoncredsRs: new AnonCredsRsModule({
-        anoncreds,
-      }),
       anoncreds: new AnonCredsModule({
         // Here we add an Indy VDR registry as an example, any AnonCreds registry
         // can be used
-        registries: [new IndyVdrAnonCredsRegistry()],
+        // registries: [new CheqdAnonCredsRegistry()],
+        anoncreds,
+        registries : [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry()],
       }),
       indyVdr: new IndyVdrModule({
         indyVdr,
@@ -60,9 +69,19 @@ const initializeHolderAgent = async () => {
           },
         ],
       }),
+      cheqd: new CheqdModule(
+        new CheqdModuleConfig({
+          networks: [
+            {
+              network: 'testnet',
+              cosmosPayerSeed: process.env.COSMOS_PAYER_SEED,
+            },
+          ],
+        })
+      ),
       dids: new DidsModule({
-        registrars: [new IndyVdrIndyDidRegistrar()],
-        resolvers: [new IndyVdrIndyDidResolver()],
+        registrars: [new IndyVdrIndyDidRegistrar(), new CheqdDidRegistrar()],
+        resolvers: [new IndyVdrIndyDidResolver(), new CheqdDidResolver()],
       }),
       proofs: new ProofsModule({
         proofProtocols: [
@@ -70,7 +89,6 @@ const initializeHolderAgent = async () => {
             proofFormats: [new AnonCredsProofFormatService(), new LegacyIndyProofFormatService()],
           }),
         ],
-        autoAcceptProofs: AutoAcceptProof.ContentApproved
       }),
       credentials: new CredentialsModule({
         credentialProtocols: [
@@ -79,6 +97,7 @@ const initializeHolderAgent = async () => {
           }),
         ],
       }),
+
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
     },
     dependencies: agentDependencies,
@@ -91,7 +110,7 @@ const initializeHolderAgent = async () => {
   agent.registerOutboundTransport(new HttpOutboundTransport())
 
   // Register a simple `Http` inbound transport
-  agent.registerInboundTransport(new HttpInboundTransport({ port: 3002 }))
+  agent.registerInboundTransport(new HttpInboundTransport({ port: 8010 }))
 
 
 

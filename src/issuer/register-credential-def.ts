@@ -1,8 +1,8 @@
 import { anoncreds } from '@hyperledger/anoncreds-nodejs';
-import { AnonCredsApi } from "@aries-framework/anoncreds"
-import { Agent } from "@aries-framework/core"
+import { AnonCredsApi } from "../../dependencies"
+import { Agent } from "../../dependencies"
 
-const registerCredentialDefinition = async(agent: Agent, issuerId: string, schemaId?: any) =>{
+const registerCredentialDefinition = async(agent: Agent, did: string, schemaId?: any) =>{
 
   console.log("=============== Credential definition ===============")
 
@@ -12,7 +12,7 @@ const registerCredentialDefinition = async(agent: Agent, issuerId: string, schem
 
   const credentialDefTemplate = {
     schemaId : schemaId,
-    issuerId: issuerId,
+    issuerId: did,
     tag: 'National Id'
   }
 

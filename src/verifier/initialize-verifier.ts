@@ -1,4 +1,4 @@
-import { AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '@aries-framework/core';
+import { AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '../../dependencies';
 import {
   AskarModule,
   Agent,
@@ -11,7 +11,6 @@ import {
   ariesAskar,
   anoncreds,
   AnonCredsModule,
-  AnonCredsRsModule,
   IndyVdrAnonCredsRegistry,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
@@ -19,7 +18,7 @@ import {
   indyVdr
 } from '../../dependencies';
 
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '../../dependencies';
 import { genesisUrl, verifier_endpoint } from '../../utils/values';
 
 
@@ -41,13 +40,11 @@ const initializeVerifierAgent = async () => {
     config,
     modules: {
       askar: new AskarModule({ ariesAskar }),
-      anoncredsRs: new AnonCredsRsModule({
-        anoncreds,
-      }),
       anoncreds: new AnonCredsModule({
         // Here we add an Indy VDR registry as an example, any AnonCreds registry
         // can be used
         // registries: [new CheqdAnonCredsRegistry()],
+        anoncreds,
         registries : [new IndyVdrAnonCredsRegistry()],
       }),
       indyVdr: new IndyVdrModule({
@@ -95,7 +92,7 @@ const initializeVerifierAgent = async () => {
   agent.registerOutboundTransport(new HttpOutboundTransport())
 
   // Register a simple `Http` inbound transport
-  agent.registerInboundTransport(new HttpInboundTransport({ port: 3003 }))
+  agent.registerInboundTransport(new HttpInboundTransport({ port: 8030 }))
 
   // Initialize the agent
   await agent.initialize()

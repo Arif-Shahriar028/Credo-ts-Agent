@@ -1,4 +1,4 @@
-import { AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '@aries-framework/core';
+import { AutoAcceptCredential, AutoAcceptProof, CredentialEventTypes, CredentialsModule, CredentialState, CredentialStateChangedEvent, DidsModule, KeyType, OutOfBandModule, ProofsModule, TypedArrayEncoder, V2CredentialProtocol, V2ProofProtocol } from '@credo-ts/core';
 import {
   AskarModule,
   Agent,
@@ -15,7 +15,6 @@ import {
   ariesAskar,
   anoncreds,
   AnonCredsModule,
-  AnonCredsRsModule,
   IndyVdrAnonCredsRegistry,
   IndyVdrIndyDidRegistrar,
   IndyVdrIndyDidResolver,
@@ -23,8 +22,21 @@ import {
   indyVdr
 } from '../../dependencies';
 
-import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '@aries-framework/anoncreds';
+import {
+  CheqdAnonCredsRegistry,
+  CheqdDidRegistrar,
+  CheqdDidResolver,
+  CheqdModule,
+  CheqdModuleConfig,
+  CheqdDidCreateOptions,
+} from '../../dependencies'
+
+import { LegacyIndyCredentialFormatService, AnonCredsCredentialFormatService, AnonCredsProofFormatService, LegacyIndyProofFormatService } from '../../dependencies';
 import { genesisUrl, issuer_endpoint } from '../../utils/values';
+import dotenv from "dotenv";
+
+
+dotenv.config();
 
 
 const initializeIssuerAgent = async () => {
@@ -37,22 +49,22 @@ const initializeIssuerAgent = async () => {
       key: 'demoagentissuer0000000000000000000',
     },
     endpoints: [issuer_endpoint],
+    autoUpdateStorageOnStartup: true,
   }
 
   // A new instance of an agent is created here
   // Askar can also be replaced by the indy-sdk if required
+
   const agent = new Agent({
     config,
     modules: {
       askar: new AskarModule({ ariesAskar }),
-      anoncredsRs: new AnonCredsRsModule({
-        anoncreds,
-      }),
       anoncreds: new AnonCredsModule({
         // Here we add an Indy VDR registry as an example, any AnonCreds registry
         // can be used
         // registries: [new CheqdAnonCredsRegistry()],
-        registries : [new IndyVdrAnonCredsRegistry()],
+        anoncreds,
+        registries : [new IndyVdrAnonCredsRegistry(), new CheqdAnonCredsRegistry()],
       }),
       indyVdr: new IndyVdrModule({
         indyVdr,
@@ -65,9 +77,19 @@ const initializeIssuerAgent = async () => {
           },
         ],
       }),
+      cheqd: new CheqdModule(
+        new CheqdModuleConfig({
+          networks: [
+            {
+              network: 'testnet',
+              cosmosPayerSeed: process.env.COSMOS_PAYER_SEED,
+            },
+          ],
+        })
+      ),
       dids: new DidsModule({
-        registrars: [new IndyVdrIndyDidRegistrar()],
-        resolvers: [new IndyVdrIndyDidResolver()],
+        registrars: [new IndyVdrIndyDidRegistrar(), new CheqdDidRegistrar()],
+        resolvers: [new IndyVdrIndyDidResolver(), new CheqdDidResolver()],
       }),
       proofs: new ProofsModule({
         proofProtocols: [
@@ -83,9 +105,11 @@ const initializeIssuerAgent = async () => {
             credentialFormats: [new LegacyIndyCredentialFormatService(), new AnonCredsCredentialFormatService()],
           }),
         ],
+        autoAcceptCredentials: AutoAcceptCredential.Always
       }),
 
       connections: new ConnectionsModule({ autoAcceptConnections: true }),
+      oob: new OutOfBandModule(),
     },
     dependencies: agentDependencies,
   })
@@ -99,7 +123,7 @@ const initializeIssuerAgent = async () => {
   agent.registerOutboundTransport(new HttpOutboundTransport())
 
   // Register a simple `Http` inbound transport
-  agent.registerInboundTransport(new HttpInboundTransport({ port: 3001 }))
+  agent.registerInboundTransport(new HttpInboundTransport({ port: 8020 }))
 
   // Initialize the agent
   await agent.initialize()

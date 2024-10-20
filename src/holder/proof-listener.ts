@@ -1,4 +1,4 @@
-import { Agent, ProofEventTypes, ProofState, ProofStateChangedEvent } from "@aries-framework/core";
+import { ProofEventTypes, ProofState, ProofStateChangedEvent } from "../../dependencies";
 
 const setUpProofListener = (holder: any, connectionId: string, cb: (...args: any) => void) =>{
 

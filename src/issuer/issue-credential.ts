@@ -1,9 +1,11 @@
-import { Metadata } from "@aries-framework/core/build/storage/Metadata"
+import { AutoAcceptCredential } from "@credo-ts/core"
 import { Agent } from "../../dependencies"
+import * as QRCode from 'qrcode-terminal';
+import { issuer_endpoint } from "../../utils/values";
 
-const issueCredential = async (agent: any, connectionId: string, credentialDefinitionId: string) =>{
+export const issueCredential = async (agent: any, connectionId: string, credentialDefinitionId: string) =>{
   console.log("Issuing credential to the holder")
-  await agent.credentials.offerCredential({
+  const credentialOfferRecord = await agent.credentials.offerCredential({
     protocolVersion: 'v2',
     connectionId: connectionId,
     credentialFormats: {
@@ -21,4 +23,42 @@ const issueCredential = async (agent: any, connectionId: string, credentialDefin
   })
 }
 
-export default issueCredential
+
+export const issueCredentialWithoutConn = async (agent: any, credentialDefinitionId: string) =>{
+  console.log("Issuing credential to the holder without connection")
+  
+  const { message } = await agent.credentials.createOffer({
+    protocolVersion: 'v2',
+    autoAcceptCredential: AutoAcceptCredential.Always,
+    credentialFormats: {
+      anoncreds: {
+        credentialDefinitionId: credentialDefinitionId,
+        attributes: [
+          { name: 'name', value: 'Arif Shahriar' },
+          { name: 'age', value: '24' },
+        ],
+      },
+    },
+  });
+  
+  // Create an out-of-band invitation with the credential offer
+  console.log(message)
+  console.log("Create an out-of-band invitation with the credential offer")
+  const outOfBandRecord = await agent.oob.createInvitation({ // Empty array for connectionless
+    messages: [message],
+  });
+  
+  
+  // Generate the invitation URL
+  console.log("Generate the invitation URL")
+
+  const invitationUrl = outOfBandRecord.outOfBandInvitation.toUrl({
+    domain: issuer_endpoint,
+  });
+
+  // QRCode.generate(invitationUrl, { small: true }, (qrcode: string) => {
+  //   console.log(qrcode);
+  // });
+  
+  console.log('Credential Offer URL:', invitationUrl);
+}
