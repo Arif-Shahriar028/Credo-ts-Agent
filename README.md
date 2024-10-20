@@ -10,7 +10,7 @@ git clone https://github.com/Arif-Shahriar028/Credo-ts-Agent.git
 
 2. Change endpoints:
 
-Change issuer and verifier endpoints in values.ts file located at `./utils/values.ts`. Place your computers ip address at the url.
+Change issuer and verifier endpoints in values.ts file located at `./utils/values.ts`. Place your computers ip address at the url or you can keep the ip as `localhost`.
 
 3. Add cosmos_payer_seed at .env file:
 

@@ -34,8 +34,8 @@ const run = async () => {
 
   // console.log(`Secret id: ${secretIds}`)
   // TODO: create cheqd did and import it to the agent
-  // const cheqdDid = await createCheqdDid(issuerAgent);
-  const cheqdDid = 'did:cheqd:testnet:94d3cb09-09ba-42a8-bf4f-6c1ef2205ee6';
+  const cheqdDid = await createCheqdDid(issuerAgent);
+  // const cheqdDid = 'did:cheqd:testnet:94d3cb09-09ba-42a8-bf4f-6c1ef2205ee6';
   console.log("cheqdDID: ",cheqdDid)
   // console.log(process.env.COSMOS_PAYER_SEED)
 
