@@ -38,7 +38,7 @@ After running issuer agent, you will get an invitation url and qr code on termin
 yarn verifier
 ```
 
-After running holder agent, you will get an invitation url and qr code on terminal. Use them as your need.
+After running verifier agent, you will get an invitation url and qr code on terminal. Use them as your need.
 
 ### Make terminal output faster
 
